@@ -19,6 +19,7 @@ lib64/
 parts/
 sdist/
 var/
+bin/
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
@@ -58,7 +59,6 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
