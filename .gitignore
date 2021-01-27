@@ -22,6 +22,7 @@ var/
 bin/
 lib/
 lib64/
+lib64
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
@@ -131,3 +132,4 @@ dmypy.json
 .pyre/
 /family-menu-planning.iml
 /.idea/
+.history/
