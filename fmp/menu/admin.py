@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Ingredient, Recipe
+from .models import Ingredient, Recipe, Menu
 
 class IngredientInlineAdmin(admin.TabularInline):
     model = Recipe.ingredients.through
@@ -28,4 +28,5 @@ class RecipeAdmin(admin.ModelAdmin):
         }
 
 admin.site.register(Ingredient)
+admin.site.register(Menu)
 admin.site.register(Recipe,RecipeAdmin)
