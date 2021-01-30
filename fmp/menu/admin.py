@@ -1,9 +1,11 @@
 import re
+
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 
 # Register your models here.
-from .models import Ingredient, Recipe, Menu, Family
+from .models import Family, Ingredient, Menu, Recipe
+
 
 class CreatedModifiedAdmin(admin.ModelAdmin):
     readonly_fields = [ 'created_by', 'modified_by' ]
@@ -41,6 +43,7 @@ class RecipeAdmin(CreatedModifiedAdmin):
             )
         }
 class MenuAdmin(CreatedModifiedAdmin):
+    date_hierarchy='date'
     def get_queryset(self, request):
         if request.user.is_superuser:
             queryset = Menu.objects.all()

@@ -52,7 +52,7 @@ class RecipeIngredients(models.Model):
         return ''
 
     class Meta:
-        verbose_name_plural="Recipe Ingredients "
+        verbose_name_plural="Recipe Ingredients"
     
 class Menu(models.Model):
     recipe = models.ForeignKey(Recipe,on_delete=models.CASCADE)
