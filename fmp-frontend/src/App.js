@@ -1,156 +1,67 @@
-  // frontend/src/App.js
+import React from 'react';
+import Modal from "./components/Modal";
+import axios from "axios";
 
-  import React, { Component } from "react";
-  import Modal from "./components/Modal";
-  const menuItems = [
-    {
-      id: 1,
-      recipe: "Go to Market",
-      date: "Sat Jan 30",
-      meal_time: "Supper",
-      completed: false
-    },
-    {
-      id: 2,
-      recipe: "Study",
-      date: "Sun Jan 31",
-      meal_time: "Supper",
-      completed: false
-    },
-    {
-      id: 3,
-      recipe: "Sally's books",
-      date: "Mon Feb 1",
-      meal_time: "Supper",
-      completed: false
-    },
-    {
-      id: 4,
-      recipe: "Article",
-      date: "Tue Feb 2",
-      meal_time: "Supper",
-      completed: false
+import { connect } from 'react-redux';
+import { Switch, Route, Redirect } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+
+/* eslint-disable */
+import ErrorPage from './pages/error';
+/* eslint-enable */
+
+import './styles/theme.scss';
+import LayoutComponent from './components/Layout';
+import Login from './pages/login';
+import Register from './pages/register';
+import { logoutUser } from './actions/user';
+import Hello from "./components/hello";
+
+
+const PrivateRoute = ({dispatch, component, ...rest }) => {
+    if (!Login.isAuthenticated(JSON.parse(localStorage.getItem('authenticated')))) {
+        dispatch(logoutUser());
+        return (<Redirect to="/login"/>)
+    } else {
+        return ( // eslint-disable-line
+            <Route {...rest} render={props => (React.createElement(component, props))}/>
+        );
     }
-  ];
-  class App extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        modal: false,
-        viewCompleted: false,
-        activeItem: {
-          recipe: "",
-          date: "",
-          meal_time: "",
-          completed: false
-        },
-        menuList: menuItems
-      };
-    }
-    toggle = () => {
-      this.setState({ modal: !this.state.modal });
-    };
-    handleSubmit = item => {
-      this.toggle();
-      alert("save" + JSON.stringify(item));
-    };
-    handleDelete = item => {
-      alert("delete" + JSON.stringify(item));
-    };
-    createItem = () => {
-      const item = { recipe: "", date: "", meal_time: "", completed: false };
-      this.setState({ activeItem: item, modal: !this.state.modal });
-    };
-    editItem = item => {
-      this.setState({ activeItem: item, modal: !this.state.modal });
-    };
-    displayCompleted = status => {
-      if (status) {
-        return this.setState({ viewCompleted: true });
-      }
-      return this.setState({ viewCompleted: false });
-    };
-    renderTabList = () => {
-      return (
-        <div className="my-5 tab-list">
-          <span
-            onClick={() => this.displayCompleted(true)}
-            className={this.state.viewCompleted ? "active" : ""}
-          >
-            complete
-          </span>
-          <span
-            onClick={() => this.displayCompleted(false)}
-            className={this.state.viewCompleted ? "" : "active"}
-          >
-            Incomplete
-          </span>
-        </div>
-      );
-    };
-    renderItems = () => {
-      const { viewCompleted } = this.state;
-      const newItems = this.state.menuList.filter(
-        item => item.completed === viewCompleted
-      );
-      return newItems.map(item => (
-        <li
-          key={item.id}
-          className="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <span
-            className={`menu-title mr-2 ${
-              this.state.viewCompleted ? "completed-menu" : ""
-            }`}
-            title={item.date}
-          >
-            {item.recipe}
-          </span>
-          <span>
-            <button
-              onClick={() => this.editItem(item)}
-              className="btn btn-secondary mr-2"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => this.handleDelete(item)}
-              className="btn btn-danger"
-            >
-              Delete
-            </button>
-          </span>
-        </li>
-      ));
-    };
-    render() {
-      return (
-        <main className="content">
-          <h1 className="text-white text-uppercase text-center my-4">Menu app</h1>
-          <div className="row ">
-            <div className="col-md-6 col-sm-10 mx-auto p-0">
-              <div className="card p-3">
-                <div className="">
-                  <button onClick={this.createItem} className="btn btn-primary">
-                    Add task
-                  </button>
-                </div>
-                {this.renderTabList()}
-                <ul className="list-group list-group-flush">
-                  {this.renderItems()}
-                </ul>
-              </div>
-            </div>
-          </div>
-          {this.state.modal ? (
-            <Modal
-              activeItem={this.state.activeItem}
-              toggle={this.toggle}
-              onSave={this.handleSubmit}
+};
+
+const CloseButton = ({closeToast}) => <i onClick={closeToast} className="la la-close notifications-close"/>
+
+class App extends React.PureComponent {
+  render() {
+    return (
+        <div>
+            <ToastContainer
+                autoClose={5000}
+                hideProgressBar
+                closeButton={<CloseButton/>}
             />
-          ) : null}
-        </main>
-      );
-    }
+            <BrowserRouter>
+                <Switch>
+                    <Route path="/" exact render={() => <Redirect to="/app/main"/>}/>
+                    <Route path="/app" exact render={() => <Redirect to="/app/main"/>}/>
+                    <PrivateRoute path="/app" dispatch={this.props.dispatch} component={LayoutComponent}/>
+                    <Route path="/register" exact component={Register}/>
+                    <Route path="/login" exact component={Login}/>
+                    <Route path="/error" exact component={ErrorPage}/>
+                    <PrivateRoute path={"/hello/"} dispatch={this.props.dispatch} component={Hello}/>
+                    <Route component={ErrorPage}/>
+                    <Redirect from="*" to="/app/main/dashboard"/>
+                </Switch>
+            </BrowserRouter>
+        </div>
+
+    );
   }
-  export default App;
+}
+
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps)(App);

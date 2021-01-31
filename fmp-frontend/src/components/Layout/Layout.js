@@ -89,7 +89,7 @@ class Layout extends React.Component {
                 </CSSTransition>
               </TransitionGroup>
               <footer className={s.contentFooter}>
-                Family Menu Planner
+              {new Date().getFullYear()} &copy; Family Menu Planner - A family meal planning and meal prep solution  Made by <a href="http://daveleblanc.tech/" rel="noopener noreferrer" target="_blank">Dave LeBlanc</a>.
               </footer>
             </main>
           </Hammer>

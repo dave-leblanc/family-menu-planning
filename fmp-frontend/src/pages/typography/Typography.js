@@ -64,8 +64,7 @@ const Typography = () => (
           </p>
           <div className="widget-padding-md w-100 h-100 text-left border rounded">
             <p className="lead">
-              Light Blue Template is admin dashboard template built with
-              Bootstrap
+              Family Menu Planner - a tool for simplifying family meal planning and prep
             </p>
           </div>
         </Widget>

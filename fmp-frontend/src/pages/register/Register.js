@@ -7,6 +7,7 @@ import Widget from '../../components/Widget';
 import { registerUser, registerError } from '../../actions/register';
 import microsoft from '../../images/microsoft.png';
 import Login from '../login';
+import axiosInstance from "../../axiosAPI";
 
 class Register extends React.Component {
     static propTypes = {
@@ -17,29 +18,20 @@ class Register extends React.Component {
         super(props);
 
         this.state = {
-            email: '',
+            username: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            email:""
         };
 
         this.doRegister = this.doRegister.bind(this);
-        this.changeEmail = this.changeEmail.bind(this);
-        this.changePassword = this.changePassword.bind(this);
-        this.changeConfirmPassword = this.changeConfirmPassword.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.checkPassword = this.checkPassword.bind(this);
         this.isPasswordValid = this.isPasswordValid.bind(this);
     }
 
-    changeEmail(event) {
-        this.setState({email: event.target.value});
-    }
-
-    changePassword(event) {
-        this.setState({password: event.target.value});
-    }
-
-    changeConfirmPassword(event) {
-        this.setState({confirmPassword: event.target.value});
+    handleChange(event) {
+        this.setState({[event.target.name]: event.target.value});
     }
 
     checkPassword() {
@@ -59,18 +51,17 @@ class Register extends React.Component {
        return this.state.password && this.state.password === this.state.confirmPassword;
     }
 
-    doRegister(e) {
+    async doRegister(e) {
         e.preventDefault();
-        if (!this.isPasswordValid()) {
-            this.checkPassword();
-        } else {
-            this.props.dispatch(registerUser({
-                creds: {
-                    email: this.state.email,
-                    password: this.state.password
-                },
-                history: this.props.history
-            }));
+        try {
+            const response = await axiosInstance.post('/user/create/', {
+                username: this.state.username,
+                email: this.state.email,
+                password: this.state.password
+            });
+            return response;
+        } catch (error) {
+             console.log(error.stack);
         }
     }
 
@@ -87,7 +78,7 @@ class Register extends React.Component {
         return (
             <div className="auth-page">
                 <Container>
-                    <Widget className="widget-auth mx-auto" title={<h3 className="mt-0">Login to your Web App</h3>}>
+                    <Widget className="widget-auth mx-auto" title={<h3 className="mt-0">Register with Family Meal Planner</h3>}>
                         <p className="widget-auth-info">
                             Please fill all fields below.
                         </p>
@@ -100,6 +91,19 @@ class Register extends React.Component {
                                 )
                             }
                             <FormGroup className="mt">
+                                <Label for="username">Username</Label>
+                                <InputGroup className="input-group-no-border">
+                                    <InputGroupAddon addonType="prepend">
+                                        <InputGroupText>
+                                            <i className="la la-user text-white"/>
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                    <Input id="username" className="input-transparent pl-3" value={this.state.username}
+                                           onChange={this.handleChange} type="username"
+                                           required name="username" placeholder="Username"/>
+                                </InputGroup>
+                            </FormGroup>
+                            <FormGroup className="mt">
                                 <Label for="email">Email</Label>
                                 <InputGroup className="input-group-no-border">
                                     <InputGroupAddon addonType="prepend">
@@ -108,7 +112,7 @@ class Register extends React.Component {
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input id="email" className="input-transparent pl-3" value={this.state.email}
-                                           onChange={this.changeEmail} type="email"
+                                           onChange={this.handleChange} type="email"
                                            required name="email" placeholder="Email"/>
                                 </InputGroup>
                             </FormGroup>
@@ -121,7 +125,7 @@ class Register extends React.Component {
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input id="password" className="input-transparent pl-3" value={this.state.password}
-                                           onChange={this.changePassword} type="password"
+                                           onChange={this.handleChange} type="password"
                                            required name="password" placeholder="Password"/>
                                 </InputGroup>
                             </FormGroup>
@@ -134,7 +138,7 @@ class Register extends React.Component {
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input id="confirmPassword" className="input-transparent pl-3" value={this.state.confirmPassword}
-                                           onChange={this.changeConfirmPassword} onBlur={this.checkPassword} type="password"
+                                           onChange={this.handleChange} onBlur={this.checkPassword} type="password"
                                            required name="confirmPassword" placeholder="Confirm"/>
                                 </InputGroup>
                             </FormGroup>
@@ -145,69 +149,13 @@ class Register extends React.Component {
                                     Already have the account? Login now!
                                 </p>
                                 <Link className="d-block text-center mb-4" to="login">Enter the account</Link>
-                                <div className="social-buttons">
-                                    <Button color="primary" className="social-button">
-                                        <i className="social-icon social-google"/>
-                                        <p className="social-text">GOOGLE</p>
-                                    </Button>
-                                    <Button color="success" className="social-button">
-                                        <i className="social-icon social-microsoft"
-                                           style={{backgroundImage: `url(${microsoft})`}}/>
-                                        <p className="social-text" style={{color: '#fff'}}>MICROSOFT</p>
-                                    </Button>
-                                </div>
                             </div>
                         </form>
                     </Widget>
-                    {/*<Widget className="widget-auth mx-auto" title={<h3 className="mt-0">Create an account</h3>}>*/}
-                        {/*<p className="widget-auth-info">*/}
-                            {/*Please fill all fields below*/}
-                        {/*</p>*/}
-                        {/*<form className="mt" onSubmit={this.doRegister}>*/}
-                            {/*{*/}
-                                {/*this.props.errorMessage && (*/}
-                                    {/*<Alert className="alert-sm" color="danger">*/}
-                                        {/*{this.props.errorMessage}*/}
-                                    {/*</Alert>*/}
-                                {/*)*/}
-                            {/*}*/}
-                            {/*<div className="form-group">*/}
-                                {/*<input className="form-control no-border" value={this.state.email}*/}
-                                       {/*onChange={this.changeEmail} type="text" required name="email"*/}
-                                       {/*placeholder="Email"/>*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                                {/*<input className="form-control no-border" value={this.state.password}*/}
-                                       {/*onChange={this.changePassword} type="password" required name="password"*/}
-                                       {/*placeholder="Password"/>*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                                {/*<input className="form-control no-border" value={this.state.confirmPassword}*/}
-                                       {/*onChange={this.changeConfirmPassword} onBlur={this.checkPassword} type="password" required name="confirmPassword"*/}
-                                       {/*placeholder="Confirm"/>*/}
-                            {/*</div>*/}
-                            {/*<Button type="submit" color="inverse" className="auth-btn mb-3" size="sm">{this.props.isFetching ? 'Loading...' : 'Register'}</Button>*/}
-                            {/*<p className="widget-auth-info">or sign up with</p>*/}
-                            {/*<div className="social-buttons">*/}
-                                {/*<Button onClick={this.googleLogin} color="primary" className="social-button mb-2">*/}
-                                    {/*<i className="social-icon social-google"/>*/}
-                                    {/*<p className="social-text">GOOGLE</p>*/}
-                                {/*</Button>*/}
-                                {/*<Button onClick={this.microsoftLogin} color="success" className="social-button">*/}
-                                    {/*<i className="social-icon social-microsoft"*/}
-                                       {/*style={{backgroundImage: `url(${microsoft})`}}/>*/}
-                                    {/*<p className="social-text">MICROSOFT</p>*/}
-                                {/*</Button>*/}
-                            {/*</div>*/}
-                        {/*</form>*/}
-                        {/*<p className="widget-auth-info">*/}
-                            {/*Already have the account? Login now!*/}
-                        {/*</p>*/}
-                        {/*<Link className="d-block text-center" to="login">Enter the account</Link>*/}
-                    {/*</Widget>*/}
+
                 </Container>
                 <footer className="auth-footer">
-                {new Date().getFullYear()} &copy; Light Blue Template - React Admin Dashboard Template Made by <a href="https://flatlogic.com" rel="noopener noreferrer" target="_blank">Flatlogic LLC</a>.                    
+                {new Date().getFullYear()} &copy; Family Menu Planner - A family meal planning and meal prep solution  Made by <a href="http://daveleblanc.tech/" rel="noopener noreferrer" target="_blank">Dave LeBlanc</a>.
                 </footer>
             </div>
         );

@@ -25,6 +25,7 @@ router.register(r'menus', views.MenuView, 'menu')
 urlpatterns = [
     path('__debug__/', include(debug_toolbar.urls)),
     path('admin/', admin.site.urls),
+    path('api/', include('authentication.urls')),
     path('api/', include(router.urls))
     
 ]

@@ -35,7 +35,7 @@ class ErrorPage extends React.Component {
             </Form>
           </div>
           <footer className={s.pageFooter}>
-            2020 &copy; Light Blue Template - React Admin Dashboard Template.
+          {new Date().getFullYear()} &copy; Family Menu Planner - A family meal planning and meal prep solution  Made by <a href="http://daveleblanc.tech/" rel="noopener noreferrer" target="_blank">Dave LeBlanc</a>.
           </footer>
         </Container>
       </div>

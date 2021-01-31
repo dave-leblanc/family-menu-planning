@@ -6,6 +6,8 @@ import { Container, Alert, Button, FormGroup, Label, InputGroup, InputGroupAddon
 import Widget from '../../components/Widget';
 import { loginUser } from '../../actions/user';
 import microsoft from '../../images/microsoft.png';
+import axiosInstance from "../../axiosAPI";
+
 
 class Login extends React.Component {
     static propTypes = {
@@ -19,28 +21,31 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            email: 'admin@flatlogic.com',
-            password: 'password',
-        };
+        this.state = {username: "", password: ""};
 
-        this.doLogin = this.doLogin.bind(this);
-        this.changeEmail = this.changeEmail.bind(this);
-        this.changePassword = this.changePassword.bind(this);
         this.signUp = this.signUp.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    changeEmail(event) {
-        this.setState({ email: event.target.value });
+    handleChange(event) {
+        this.setState({[event.target.name]: event.target.value});
     }
 
-    changePassword(event) {
-        this.setState({ password: event.target.value });
-    }
-
-    doLogin(e) {
-        e.preventDefault();
-        this.props.dispatch(loginUser({ email: this.state.email, password: this.state.password }));
+    async handleSubmit(event) {
+        event.preventDefault();
+        try {
+            const data = await axiosInstance.post('/token/obtain/', {
+                username: this.state.username,
+                password: this.state.password
+            });
+            axiosInstance.defaults.headers['Authorization'] = "JWT " + data.access;
+            localStorage.setItem('access_token', data.access);
+            localStorage.setItem('refresh_token', data.refresh);
+            return data;
+        } catch (error) {
+            throw error;
+        }
     }
 
     signUp() {
@@ -60,11 +65,11 @@ class Login extends React.Component {
         return (
             <div className="auth-page">
                 <Container>
-                    <Widget className="widget-auth mx-auto" title={<h3 className="mt-0">Login to your Web App</h3>}>
+                    <Widget className="widget-auth mx-auto" title={<h3 className="mt-0">Login to Family Meal Planner</h3>}>
                         <p className="widget-auth-info">
-                            Use your email to sign in.
+                            Use your Username to sign in.
                         </p>
-                        <form onSubmit={this.doLogin}>
+                        <form onSubmit={this.handleSubmit}>
                             {
                                 this.props.errorMessage && (
                                     <Alert className="alert-sm widget-middle-overflow rounded-0" color="danger">
@@ -73,15 +78,15 @@ class Login extends React.Component {
                                 )
                             }
                             <FormGroup className="mt">
-                                <Label for="email">Email</Label>
+                                <Label for="username">Username</Label>
                                 <InputGroup className="input-group-no-border">
                                     <InputGroupAddon addonType="prepend">
                                         <InputGroupText>
                                             <i className="la la-user text-white"/>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input id="email" className="input-transparent pl-3" value={this.state.email} onChange={this.changeEmail} type="email"
-                                           required name="email" placeholder="Email"/>
+                                    <Input id="username" className="input-transparent pl-3" value={this.state.username} onChange={this.handleChange} type="username"
+                                           required name="username" placeholder="username"/>
                                 </InputGroup>
                             </FormGroup>
                             <FormGroup>
@@ -93,7 +98,7 @@ class Login extends React.Component {
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input id="password" className="input-transparent pl-3" value={this.state.password}
-                                           onChange={this.changePassword} type="password"
+                                           onChange={this.handleChange} type="password"
                                            required name="password" placeholder="Password"/>
                                 </InputGroup>
                             </FormGroup>
@@ -109,23 +114,12 @@ class Login extends React.Component {
                                     Don't have an account? Sign up now!
                                 </p>
                                 <Link className="d-block text-center mb-4" to="register">Create an Account</Link>
-                                <div className="social-buttons">
-                                    <Button color="primary" className="social-button">
-                                        <i className="social-icon social-google"/>
-                                        <p className="social-text">GOOGLE</p>
-                                    </Button>
-                                    <Button color="success" className="social-button">
-                                        <i className="social-icon social-microsoft"
-                                           style={{backgroundImage: `url(${microsoft})`}}/>
-                                        <p className="social-text" style={{color: '#fff'}}>MICROSOFT</p>
-                                    </Button>
-                                </div>
                             </div>
                         </form>
                     </Widget>
                 </Container>
                 <footer className="auth-footer">
-                {new Date().getFullYear()} &copy; Light Blue Template - React Admin Dashboard Template Made by <a href="https://flatlogic.com" rel="noopener noreferrer" target="_blank">Flatlogic LLC</a>.
+                {new Date().getFullYear()} &copy; Family Menu Planner - A family meal planning and meal prep solution  Made by <a href="http://daveleblanc.tech/" rel="noopener noreferrer" target="_blank">Dave LeBlanc</a>.
                 </footer>
             </div>
         );
