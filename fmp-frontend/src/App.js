@@ -7,11 +7,11 @@ import React from 'react';
 import componentQueries from 'react-component-queries';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import './styles/reduction.scss';
-import { logoutUser } from './actions/user';
+//import { logoutUser } from './actions/user';
 
 const PrivateRoute = ({dispatch, component, ...rest }) => {
   if (!JSON.parse(localStorage.getItem('authenticated'))) {
-      dispatch(logoutUser());
+      //dispatch(logoutUser());
       return (<Redirect to="/login"/>)
   } else {
       return ( // eslint-disable-line
@@ -66,26 +66,26 @@ class App extends React.Component {
 
             <MainLayout breakpoint={this.props.breakpoint}>
               <React.Suspense fallback={<PageSpinner />}>
-                <Route exact path="/" component={DashboardPage} />
-                <Route exact path="/login-modal" component={AuthModalPage} />
-                <Route exact path="/buttons" component={ButtonPage} />
-                <Route exact path="/cards" component={CardPage} />
-                <Route exact path="/widgets" component={WidgetPage} />
-                <Route exact path="/typography" component={TypographyPage} />
-                <Route exact path="/alerts" component={AlertPage} />
-                <Route exact path="/tables" component={TablePage} />
-                <Route exact path="/badges" component={BadgePage} />
-                <Route
+                <PrivateRoute exact path="/" component={DashboardPage} />
+                //<Route exact path="/login-modal" component={AuthModalPage} />
+                <PrivateRoute exact path="/buttons" component={ButtonPage} />
+                <PrivateRoute exact path="/cards" component={CardPage} />
+                <PrivateRoute exact path="/widgets" component={WidgetPage} />
+                <PrivateRoute exact path="/typography" component={TypographyPage} />
+                <PrivateRoute exact path="/alerts" component={AlertPage} />
+                <PrivateRoute exact path="/tables" component={TablePage} />
+                <PrivateRoute exact path="/badges" component={BadgePage} />
+                <PrivateRoute
                   exact
                   path="/button-groups"
                   component={ButtonGroupPage}
                 />
-                <Route exact path="/dropdowns" component={DropdownPage} />
-                <Route exact path="/progress" component={ProgressPage} />
-                <Route exact path="/modals" component={ModalPage} />
-                <Route exact path="/forms" component={FormPage} />
-                <Route exact path="/input-groups" component={InputGroupPage} />
-                <Route exact path="/charts" component={ChartPage} />
+                <PrivateRoute exact path="/dropdowns" component={DropdownPage} />
+                <PrivateRoute exact path="/progress" component={ProgressPage} />
+                <PrivateRoute exact path="/modals" component={ModalPage} />
+                <PrivateRoute exact path="/forms" component={FormPage} />
+                <PrivateRoute exact path="/input-groups" component={InputGroupPage} />
+                <PrivateRoute exact path="/charts" component={ChartPage} />
               </React.Suspense>
             </MainLayout>
             <Redirect to="/" />

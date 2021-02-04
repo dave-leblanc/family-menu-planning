@@ -1,4 +1,4 @@
-import {toast} from 'react-toastify';
+//import {toast} from 'react-toastify';
 import axiosInstance from "../axiosAPI";
 export const REGISTER_REQUEST = 'REGISTER_REQUEST';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
@@ -27,7 +27,7 @@ export function  registerUser(payload) {
                 password: payload.creds.password
             });    
             
-            toast.success("You've been registered successfully");
+            //toast.success("You've been registered successfully");
             payload.history.push('/login');
         } catch (error) {
             dispatch(registerError('Something was wrong. Try again'));

@@ -1,9 +1,16 @@
 import logo200Image from 'assets/img/logo/logo_200.png';
-import PropTypes from 'prop-types';
+import { withRouter, Redirect, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
-
+import { loginUser } from '../actions/user';
+import { registerUser, registerError } from '../actions/register';
 class AuthForm extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+  };
+
   get isLogin() {
     return this.props.authState === STATE_LOGIN;
   }
@@ -18,7 +25,73 @@ class AuthForm extends React.Component {
     this.props.onChangeAuthState(authState);
   };
 
-  handleSubmit = event => {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        username: '',
+        password: '',
+        confirmPassword: '',
+        email:""
+    };
+
+    this.doRegister = this.doRegister.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.checkPassword = this.checkPassword.bind(this);
+    this.isPasswordValid = this.isPasswordValid.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    alert(event.target);
+      this.setState({[event.target.name]: event.target.value});
+  }
+
+  checkPassword() {
+      if (!this.isPasswordValid()) {
+          if (!this.state.password) {
+              this.props.dispatch(registerError("Password field is empty"));
+          } else {
+              this.props.dispatch(registerError("Passwords are not equal"));
+          }
+          setTimeout(() => {
+              this.props.dispatch(registerError());
+          }, 3 * 1000)
+      }
+  }
+
+  isPasswordValid() {
+    return this.state.password && this.state.password === this.state.confirmPassword;
+  }
+
+  async doRegister(e) {
+      e.preventDefault();
+      if (!this.isPasswordValid()) {
+          this.checkPassword();
+      } else {
+          this.props.dispatch(registerUser({
+              creds: {
+                  email: this.state.email,
+                  username: this.state.username,
+                  password: this.state.password
+              },
+              history: this.props.history
+          }));
+      }
+  }
+
+  async handleSubmit(event)  {
+    if (this.isSignup) {
+      alert('signup')
+    }
+    else {
+      alert('login')
+      this.props.dispatch(loginUser({creds: {
+        username: this.state.username,
+        password: this.state.password
+      },
+      history: this.props.history}));
+    }
     event.preventDefault();
   };
 
@@ -39,6 +112,8 @@ class AuthForm extends React.Component {
   render() {
     const {
       showLogo,
+      emailLabel,
+      emailInputProps,
       usernameLabel,
       usernameInputProps,
       passwordLabel,
@@ -62,18 +137,24 @@ class AuthForm extends React.Component {
             />
           </div>
         )}
+        {this.isSignup && (
+          <FormGroup>
+            <Label for={emailLabel}>{emailLabel}</Label>
+            <Input {...emailInputProps} onChange={this.handleChange} />
+          </FormGroup>
+        )}
         <FormGroup>
           <Label for={usernameLabel}>{usernameLabel}</Label>
-          <Input {...usernameInputProps} />
+          <Input {...usernameInputProps} onChange={this.handleChange} />
         </FormGroup>
         <FormGroup>
           <Label for={passwordLabel}>{passwordLabel}</Label>
-          <Input {...passwordInputProps} />
+          <Input {...passwordInputProps} onChange={this.handleChange} />
         </FormGroup>
         {this.isSignup && (
           <FormGroup>
             <Label for={confirmPasswordLabel}>{confirmPasswordLabel}</Label>
-            <Input {...confirmPasswordInputProps} />
+            <Input {...confirmPasswordInputProps} onChange={this.handleChange}/>
           </FormGroup>
         )}
         <FormGroup check>
@@ -118,6 +199,8 @@ export const STATE_SIGNUP = 'SIGNUP';
 AuthForm.propTypes = {
   authState: PropTypes.oneOf([STATE_LOGIN, STATE_SIGNUP]).isRequired,
   showLogo: PropTypes.bool,
+  emailLabel: PropTypes.string,
+  emailInputProps: PropTypes.object,
   usernameLabel: PropTypes.string,
   usernameInputProps: PropTypes.object,
   passwordLabel: PropTypes.string,
@@ -130,10 +213,15 @@ AuthForm.propTypes = {
 AuthForm.defaultProps = {
   authState: 'LOGIN',
   showLogo: true,
-  usernameLabel: 'Email',
-  usernameInputProps: {
+  emailLabel: 'E-mail',
+  emailInputProps: {
     type: 'email',
-    placeholder: 'your@email.com',
+    placeholder: 'E-mail',
+  },
+  usernameLabel: 'Username',
+  usernameInputProps: {
+    type: 'username',
+    placeholder: 'Username',
   },
   passwordLabel: 'Password',
   passwordInputProps: {
@@ -148,4 +236,13 @@ AuthForm.defaultProps = {
   onLogoClick: () => {},
 };
 
-export default AuthForm;
+
+function mapStateToProps(state) {
+  return {
+      isFetching: state.auth.isFetching,
+      isAuthenticated: state.auth.isAuthenticated,
+      errorMessage: state.auth.errorMessage,
+  };
+}
+
+export default withRouter(connect(mapStateToProps)(AuthForm));

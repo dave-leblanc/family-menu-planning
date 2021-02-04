@@ -1,5 +1,5 @@
 import axiosInstance from "../axiosAPI";
-import {toast} from 'react-toastify';
+//import {toast} from 'react-toastify';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
@@ -55,8 +55,8 @@ export function loginUser(payload) {
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             localStorage.setItem('authenticated', true);
-            toast.success("You've logged in successfully");
-            payload.history.push('/app');
+            //toast.success("You've logged in successfully");
+            payload.history.push('/');
             
             dispatch(receiveLogin());
             
