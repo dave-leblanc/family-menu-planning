@@ -43,7 +43,6 @@ class AuthForm extends React.Component {
   }
 
   handleChange(event) {
-    alert(event.target);
       this.setState({[event.target.name]: event.target.value});
   }
 
@@ -216,21 +215,25 @@ AuthForm.defaultProps = {
   emailLabel: 'E-mail',
   emailInputProps: {
     type: 'email',
+    name: 'email',
     placeholder: 'E-mail',
   },
   usernameLabel: 'Username',
   usernameInputProps: {
     type: 'username',
+    name: 'username',
     placeholder: 'Username',
   },
   passwordLabel: 'Password',
   passwordInputProps: {
     type: 'password',
+    name: 'password',
     placeholder: 'your password',
   },
   confirmPasswordLabel: 'Confirm Password',
   confirmPasswordInputProps: {
     type: 'password',
+    name: 'confirmPassword',
     placeholder: 'confirm your password',
   },
   onLogoClick: () => {},
