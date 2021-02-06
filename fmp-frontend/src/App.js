@@ -21,7 +21,6 @@ const PrivateRoute = ({dispatch, component, ...rest }) => {
 };
 
 const AlertPage = React.lazy(() => import('pages/AlertPage'));
-const AuthModalPage = React.lazy(() => import('pages/AuthModalPage'));
 const BadgePage = React.lazy(() => import('pages/BadgePage'));
 const ButtonGroupPage = React.lazy(() => import('pages/ButtonGroupPage'));
 const ButtonPage = React.lazy(() => import('pages/ButtonPage'));
@@ -67,7 +66,6 @@ class App extends React.Component {
             <MainLayout breakpoint={this.props.breakpoint}>
               <React.Suspense fallback={<PageSpinner />}>
                 <PrivateRoute exact path="/" component={DashboardPage} />
-                //<Route exact path="/login-modal" component={AuthModalPage} />
                 <PrivateRoute exact path="/buttons" component={ButtonPage} />
                 <PrivateRoute exact path="/cards" component={CardPage} />
                 <PrivateRoute exact path="/widgets" component={WidgetPage} />
@@ -75,11 +73,7 @@ class App extends React.Component {
                 <PrivateRoute exact path="/alerts" component={AlertPage} />
                 <PrivateRoute exact path="/tables" component={TablePage} />
                 <PrivateRoute exact path="/badges" component={BadgePage} />
-                <PrivateRoute
-                  exact
-                  path="/button-groups"
-                  component={ButtonGroupPage}
-                />
+                <PrivateRoute exact path="/button-groups" component={ButtonGroupPage} />
                 <PrivateRoute exact path="/dropdowns" component={DropdownPage} />
                 <PrivateRoute exact path="/progress" component={ProgressPage} />
                 <PrivateRoute exact path="/modals" component={ModalPage} />

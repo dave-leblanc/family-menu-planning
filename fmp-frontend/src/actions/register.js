@@ -21,7 +21,7 @@ export function  registerUser(payload) {
     return async(dispatch) => {
 
         try {
-            const response = await axiosInstance.post('/user/create/', {
+            await axiosInstance.post('/user/create/', {
                 username: payload.creds.username,
                 email: payload.creds.email,
                 password: payload.creds.password

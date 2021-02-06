@@ -2,9 +2,13 @@ import Avatar from 'components/Avatar';
 import { UserCard } from 'components/Card';
 import Notifications from 'components/Notifications';
 import SearchInput from 'components/SearchInput';
+import { logoutUser } from '../../actions/user'
 import { notificationsData } from 'demos/header';
 import withBadge from 'hocs/withBadge';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   MdClearAll,
   MdExitToApp,
@@ -46,6 +50,10 @@ const MdNotificationsActiveWithBadge = withBadge({
 })(MdNotificationsActive);
 
 class Header extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+  };
+
   state = {
     isOpenNotificationPopover: false,
     isNotificationConfirmed: false,
@@ -62,6 +70,16 @@ class Header extends React.Component {
     }
   };
 
+  handleSignOut() {
+    this.props.dispatch(logoutUser());
+    this.props.history.push('/login');
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.handleSignOut = this.handleSignOut.bind(this);
+  }
   toggleUserCardPopover = () => {
     this.setState({
       isOpenUserCardPopover: !this.state.isOpenUserCardPopover,
@@ -156,7 +174,7 @@ class Header extends React.Component {
                     <ListGroupItem tag="button" action className="border-light">
                       <MdHelp /> Help
                     </ListGroupItem>
-                    <ListGroupItem tag="button" action className="border-light">
+                    <ListGroupItem tag="button" action onClick={this.handleSignOut} className="border-light">
                       <MdExitToApp /> Signout
                     </ListGroupItem>
                   </ListGroup>
@@ -170,4 +188,11 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+
+function mapStateToProps(state) {
+  return {
+      errorMessage: state.auth.errorMessage,
+  };
+}
+
+export default withRouter(connect(mapStateToProps)(Header));

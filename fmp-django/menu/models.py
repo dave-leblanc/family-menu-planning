@@ -30,6 +30,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=80)
+    description = models.CharField(max_length=255)
     ingredients = models.ManyToManyField(Ingredient,through='RecipeIngredients',through_fields=('recipe','ingredient'))
     dish_type = models.CharField(max_length=2, choices=DISH_TYPE_CHOICES,default=MAIN_ENTREE)
     cooking_method = models.CharField(max_length=2, choices=COOKING_METHOD_CHOICES,blank=True,null=True)

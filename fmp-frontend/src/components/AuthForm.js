@@ -1,5 +1,5 @@
 import logo200Image from 'assets/img/logo/logo_200.png';
-import { withRouter, Redirect, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -84,7 +84,6 @@ class AuthForm extends React.Component {
       alert('signup')
     }
     else {
-      alert('login')
       this.props.dispatch(loginUser({creds: {
         username: this.state.username,
         password: this.state.password
@@ -242,8 +241,6 @@ AuthForm.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-      isFetching: state.auth.isFetching,
-      isAuthenticated: state.auth.isAuthenticated,
       errorMessage: state.auth.errorMessage,
   };
 }
