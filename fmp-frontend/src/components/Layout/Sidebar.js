@@ -80,17 +80,23 @@ const pageContents = [
   },
 ];
 
-const navItems = [
-  { to: '/', name: 'dashboard', exact: true, Icon: MdDashboard },
+const oldNavItems = [
+  { to: '/dashboard', name: 'dashboard', exact: true, Icon: MdDashboard },
   { to: '/cards', name: 'cards', exact: false, Icon: MdWeb },
   { to: '/charts', name: 'charts', exact: false, Icon: MdInsertChart },
   { to: '/widgets', name: 'widgets', exact: false, Icon: MdWidgets },
 ];
 
+const navItems = [
+  { to: '/', name: 'dashboard', exact: true, Icon: MdDashboard },
+];
+
+
 const bem = bn.create('sidebar');
 
 class Sidebar extends React.Component {
   state = {
+    isOpenOldMenu: false,
     isOpenComponents: true,
     isOpenContents: true,
     isOpenPages: true,
@@ -127,6 +133,44 @@ class Sidebar extends React.Component {
           </Navbar>
           <Nav vertical>
             {navItems.map(({ to, name, exact, Icon }, index) => (
+              <NavItem key={index} className={bem.e('nav-item')}>
+                <BSNavLink
+                  id={`navItem-${name}-${index}`}
+                  className="text-uppercase"
+                  tag={NavLink}
+                  to={to}
+                  activeClassName="active"
+                  exact={exact}
+                >
+                  <Icon className={bem.e('nav-item-icon')} />
+                  <span className="">{name}</span>
+                </BSNavLink>
+              </NavItem>
+            ))}
+          <NavItem
+              className={bem.e('nav-item')}
+              onClick={this.handleClick('OldMenu')}
+            >
+              <BSNavLink className={bem.e('nav-item-collapse')}>
+                <div className="d-flex">
+                  <MdDashboard className={bem.e('nav-item-icon')} />
+                  <span className=" align-self-start">OldMenu</span>
+                </div>
+                <MdKeyboardArrowDown
+                  className={bem.e('nav-item-icon')}
+                  style={{
+                    padding: 0,
+                    transform: this.state.isOpenOldMenu
+                      ? 'rotate(0deg)'
+                      : 'rotate(-90deg)',
+                    transitionDuration: '0.3s',
+                    transitionProperty: 'transform',
+                  }}
+                />
+              </BSNavLink>
+            </NavItem>
+          <Collapse isOpen={this.state.isOpenOldMenu}>
+            {oldNavItems.map(({ to, name, exact, Icon }, index) => (
               <NavItem key={index} className={bem.e('nav-item')}>
                 <BSNavLink
                   id={`navItem-${name}-${index}`}
@@ -261,6 +305,7 @@ class Sidebar extends React.Component {
                 </NavItem>
               ))}
             </Collapse>
+          </Collapse>
           </Nav>
         </div>
       </aside>

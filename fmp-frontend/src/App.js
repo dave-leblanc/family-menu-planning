@@ -27,6 +27,7 @@ const ButtonPage = React.lazy(() => import('pages/ButtonPage'));
 const CardPage = React.lazy(() => import('pages/CardPage'));
 const ChartPage = React.lazy(() => import('pages/ChartPage'));
 const DashboardPage = React.lazy(() => import('pages/DashboardPage'));
+const OldDashboardPage = React.lazy(() => import('pages/OldDashboardPage'));
 const DropdownPage = React.lazy(() => import('pages/DropdownPage'));
 const FormPage = React.lazy(() => import('pages/FormPage'));
 const InputGroupPage = React.lazy(() => import('pages/InputGroupPage'));
@@ -35,6 +36,7 @@ const ProgressPage = React.lazy(() => import('pages/ProgressPage'));
 const TablePage = React.lazy(() => import('pages/TablePage'));
 const TypographyPage = React.lazy(() => import('pages/TypographyPage'));
 const WidgetPage = React.lazy(() => import('pages/WidgetPage'));
+const MenuPage = React.lazy(() => import('pages/MenuPage'));
 
 const getBasename = () => {
   return `/${process.env.PUBLIC_URL.split('/').pop()}`;
@@ -66,6 +68,7 @@ class App extends React.Component {
             <MainLayout breakpoint={this.props.breakpoint}>
               <React.Suspense fallback={<PageSpinner />}>
                 <PrivateRoute exact path="/" component={DashboardPage} />
+                <PrivateRoute exact path="/dashboard" component={OldDashboardPage} />
                 <PrivateRoute exact path="/buttons" component={ButtonPage} />
                 <PrivateRoute exact path="/cards" component={CardPage} />
                 <PrivateRoute exact path="/widgets" component={WidgetPage} />
@@ -80,6 +83,8 @@ class App extends React.Component {
                 <PrivateRoute exact path="/forms" component={FormPage} />
                 <PrivateRoute exact path="/input-groups" component={InputGroupPage} />
                 <PrivateRoute exact path="/charts" component={ChartPage} />
+                <PrivateRoute exact path="/menus" component={MenuPage} />
+                
               </React.Suspense>
             </MainLayout>
             <Redirect to="/" />

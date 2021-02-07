@@ -11,15 +11,16 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
+    ingredient_name = serializers.ReadOnlyField(source='ingredient.name')
 
     class Meta:
         model = RecipeIngredients
-        fields = ('ingredient', 'amount', 'optional',
+        fields = ( 'ingredient_name', 'amount', 'optional',
                   'alternatives', 'prep_instructions')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    ingredients = RecipeIngredientsSerializer()
+    ingredients = RecipeIngredientsSerializer(source='recipeingredients_set',many=True)
 
     class Meta:
         model = Recipe

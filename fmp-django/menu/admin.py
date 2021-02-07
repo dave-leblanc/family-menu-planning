@@ -20,12 +20,13 @@ class IngredientInlineAdmin(admin.TabularInline):
     insert_after = 'cooking_method'
 
     def has_add_permission(self, request, obj):
-        if obj.created_by != request.user:
+        if obj and obj.created_by != request.user:
             return False
         return super().has_add_permission(request, obj)
 
 
 class RecipeAdmin(CreatedModifiedAdmin):
+    save_as = True
     fieldsets = (
         (None, {
          'fields': ('name', 'dish_type', 'cooking_method')
@@ -49,6 +50,7 @@ class RecipeAdmin(CreatedModifiedAdmin):
 
 
 class MenuAdmin(CreatedModifiedAdmin):
+    save_as = True
     date_hierarchy = 'date'
 
     def get_queryset(self, request):
