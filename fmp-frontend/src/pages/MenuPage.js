@@ -21,7 +21,7 @@
    }
    refreshList = () => {
     axiosInstance
-       .get("/menus/")
+       .get("/menus/this_week/")
        .then(res => {
          this.setState({ menuList: res.data })
        })

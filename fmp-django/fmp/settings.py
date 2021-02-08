@@ -26,7 +26,6 @@ SECRET_KEY = 'spzbf0h11*c8c^0_%=4!hf#@2twz-h=83nnmrczhf8l4p5%kc^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -42,8 +41,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'debug_toolbar',
-    'menu'
+    'menu',
+    'notifications',
+    'notifications_rest',
+    'rest_registration',
 ]
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -52,6 +55,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),  #
 }
+
+REST_REGISTRATION = {
+    'REGISTER_VERIFICATION_ENABLED': False,
+    'REGISTER_EMAIL_VERIFICATION_ENABLED': False,
+    'RESET_PASSWORD_VERIFICATION_ENABLED': False,
+}
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
@@ -80,8 +90,18 @@ MIDDLEWARE = [
     'django_currentuser.middleware.ThreadLocalUserMiddleware',
 ]
 
+
+ALLOWED_HOSTS = [
+     'http://127.0.0.1:3000',
+     'http://localhost:3000',
+     '127.0.0.1'
+     
+]
+CORS_ORIGIN_ALLOW_ALL = False
+
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:3000',
+    'http://localhost:3000',
 )
 
 INTERNAL_IPS = [
@@ -148,7 +168,7 @@ AUTH_USER_MODEL = "authentication.CustomUser"
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Halifax'
 
 USE_I18N = True
 
